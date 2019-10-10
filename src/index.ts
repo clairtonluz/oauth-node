@@ -1,5 +1,5 @@
-import server from './server';
+import app from './app';
 
-server.listen(3000, () => {
+app.listen(3000, () => {
   console.log(`[SERVER] Running at http://localhost:3000`);
 });
