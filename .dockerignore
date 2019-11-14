@@ -1,0 +1,13 @@
+dist
+node_modules
+Dockerfile
+docker-composer*.yml
+
+.vscode
+.editorconfig
+.git
+.gitignore
+
+*.md
+*.log
+
