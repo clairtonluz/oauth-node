@@ -15,6 +15,10 @@ const configuration: Configuration = {
   },
   clients: [{
     client_id: 'web_application',
+    client_name: "My Application Name",
+    application_type: "web",
+    post_logout_redirect_uris: ["https://blog.clairtonluz.com.br"],
+    logo_uri: "http://pluspng.com/img-png/google-logo-png-open-2000.png",
     client_secret: 'bar',
     grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],
@@ -22,15 +26,18 @@ const configuration: Configuration = {
     // + other client properties
   }, {
     client_id: 'mobile_application',
+    client_name: 'Mobile Application',
+    application_type: "native",
     client_secret: 'mobile_secret',
     grant_types: ['urn:ietf:params:oauth:grant-type:device_code'],
     response_types: [],
     redirect_uris: [],
-    token_endpoint_auth_method: 'none'
+    token_endpoint_auth_method: 'none',
+
     // + other client properties
   }, {
-    client_id: 'client_credentials',
-    client_secret: 'super_secret',
+    client_id: 'client_id',
+    client_secret: 'client_secret',
     grant_types: ['client_credentials'],
     redirect_uris: [],
     response_types: [],
@@ -51,7 +58,8 @@ const configuration: Configuration = {
   // ...
 };
 
-const oidc = new Provider('http://localhost:3000', configuration);
+const issuer = process.env.PUBLIC_URL || 'http://localhost:3000';
+const oidc = new Provider(issuer, configuration);
 
 // express/nodejs style application callback (req, res, next) for use with express apps, see /examples/express.js
 export default oidc.callback;
