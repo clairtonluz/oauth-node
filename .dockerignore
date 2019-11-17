@@ -4,6 +4,7 @@ Dockerfile
 docker-compose*.yml
 
 .editorconfig
+.dockerignore
 .gitignore
 .vscode/
 .git/

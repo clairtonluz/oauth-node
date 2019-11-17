@@ -7,6 +7,6 @@ RUN npm run build
 
 FROM node:12-alpine
 WORKDIR /app
-COPY --from=build /app .
-RUN ls -lahts
+COPY --from=build /app/dist dist
+COPY --from=build /app/node_modules node_modules
 CMD [ "node", "dist/index.js" ]
