@@ -1,23 +1,27 @@
 const { Provider } = require('oidc-provider');
 
 const findAccount = async (ctx: any, id: number) => {
-  console.log('findAccount', ctx);
-  const claims = async () => {
-    return { sub: id };
-  }
+  console.log('findAccount id', id);
+  // console.log('findAccount ctx', ctx);
   return {
     accoundId: id,
-    claims,
+    async claims() {
+      return {
+        sub: id,
+        email: `${id}@bytecom.psi.br`,
+        email_verified: true,
+      };
+    },
   }
 }
 
-const findById = async (ctx: any, id: number) => {
-  console.log('findById', ctx);
-  return {
-    accountId: id,
-    async claims() { return { sub: id }; },
-  };
-}
+// const findById = async (ctx: any, id: number) => {
+//   console.log('findById', ctx);
+//   return {
+//     accountId: id,
+//     async claims() { return { sub: id }; },
+//   };
+// }
 
 const configuration = {
   // ... see the available options in Configuration options section
@@ -31,11 +35,18 @@ const configuration = {
     AccessToken: 'jwt',
   },
   clients: [{
-    client_id: 'aluno_front',
+    client_id: 'web_application',
     client_secret: 'bar',
-    grant_types: ['authorization_code'],
+    grant_types: ['authorization_code', 'refresh_token'],
     response_types: ['code'],
-    redirect_uris: ['http://aluno.local/autorization'],
+    redirect_uris: ['http://example.local:3000/autorization'],
+    // + other client properties
+  }, {
+    client_id: 'mobile_application',
+    client_secret: 'mobile_secret',
+    grant_types: ['urn:ietf:params:oauth:grant-type:device_code'],
+    response_types: [],
+    redirect_uris: [],
     // + other client properties
   }, {
     client_id: 'client_credentials',
@@ -44,19 +55,19 @@ const configuration = {
     redirect_uris: [],
     response_types: [],
   }],
-  claims: {
-    email: ['email', 'email_verified'],
-    phone: ['phone_number', 'phone_number_verified'],
-    profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name', 'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo']
-  },
-  clientDefaults: {
-    grant_types: ['authorization_code'],
-    id_token_signed_response_alg: 'RS256',
-    response_types: ['code'],
-    token_endpoint_auth_method: 'client_secret_basic',
-  },
+  // claims: {
+  //   email: ['email', 'email_verified'],
+  //   phone: ['phone_number', 'phone_number_verified'],
+  //   profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name', 'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo']
+  // },
+  // clientDefaults: {
+  //   grant_types: ['authorization_code'],
+  //   id_token_signed_response_alg: 'RS256',
+  //   response_types: ['code'],
+  //   token_endpoint_auth_method: 'client_secret_basic',
+  // },
   findAccount,
-  findById,
+  // findById,
   // ...
 };
 
