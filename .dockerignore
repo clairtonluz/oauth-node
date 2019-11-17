@@ -1,12 +1,12 @@
-dist
-node_modules
+dist/
+node_modules/
 Dockerfile
-docker-composer*.yml
+docker-compose*.yml
 
-.vscode
 .editorconfig
-.git
 .gitignore
+.vscode/
+.git/
 
 *.md
 *.log
