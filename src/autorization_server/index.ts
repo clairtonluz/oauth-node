@@ -1,6 +1,6 @@
 const { Provider } = require('oidc-provider');
 
-const findAccount = async (ctx: any, id: number) => {
+const findAccount = async (_: any, id: number) => {
   console.log('findAccount id', id);
   // console.log('findAccount ctx', ctx);
   return {
