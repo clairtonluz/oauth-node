@@ -6,8 +6,8 @@ services:
     command: "npm run dev"
     environment:
       - TZ=America/Fortaleza
-      - PORT=80
+      - PUBLIC_URL=http://localhost
     ports:
-      - 80:80
+      - 80:3000
     volumes:
       - .:/app

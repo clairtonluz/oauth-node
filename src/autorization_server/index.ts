@@ -1,35 +1,14 @@
-const { Provider } = require('oidc-provider');
+import { Configuration, Provider } from 'oidc-provider';
+import findAccount from './findAccount';
 
-const findAccount = async (_: any, id: number) => {
-  console.log('findAccount id', id);
-  // console.log('findAccount ctx', ctx);
-  return {
-    accoundId: id,
-    async claims() {
-      return {
-        sub: id,
-        email: `${id}@bytecom.psi.br`,
-        email_verified: true,
-      };
-    },
-  }
-}
-
-// const findById = async (ctx: any, id: number) => {
-//   console.log('findById', ctx);
-//   return {
-//     accountId: id,
-//     async claims() { return { sub: id }; },
-//   };
-// }
-
-const configuration = {
+const configuration: Configuration = {
   // ... see the available options in Configuration options section
   features: {
     introspection: { enabled: true },
     revocation: { enabled: true },
     clientCredentials: { enabled: true },
     deviceFlow: { enabled: true },
+    // oauthNativeApps: { enabled: true },
   },
   formats: {
     AccessToken: 'jwt',
@@ -47,6 +26,7 @@ const configuration = {
     grant_types: ['urn:ietf:params:oauth:grant-type:device_code'],
     response_types: [],
     redirect_uris: [],
+    token_endpoint_auth_method: 'none'
     // + other client properties
   }, {
     client_id: 'client_credentials',
