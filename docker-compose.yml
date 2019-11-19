@@ -7,7 +7,17 @@ services:
     environment:
       - TZ=America/Fortaleza
       - PUBLIC_URL=http://localhost
+      - REDIS_URL=tcp://redis:6379
     ports:
       - 80:3000
     volumes:
       - .:/app
+    networks:
+      - net_interna
+  redis:
+    image: redis:5-alpine
+    networks:
+      - net_interna
+
+networks:
+  net_interna:
