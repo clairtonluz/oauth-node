@@ -2,7 +2,7 @@ import Controller from "../interfaces/Controller";
 import { Router } from "express";
 
 import { Provider } from 'oidc-provider';
-import configuration from '../autorization_server/configuration';
+import configuration from '../configurations/authorization_server';
 
 class AuthorizationController implements Controller {
   public path = '/';
