@@ -1,7 +1,6 @@
-import server from './server';
+import App from './app';
+import controllers from './app/controllers';
 
-const port = process.env.PORT || 3000;
-server.listen(port, () => {
-  console.info(`[SERVER] Port expose in container ${port}`)
-  console.info(`[SERVER] Running at ${process.env.PUBLIC_URL}`);
-});
+const app = new App(controllers);
+
+app.listen();

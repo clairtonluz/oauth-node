@@ -1,42 +1,42 @@
 import Redis from 'ioredis';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { Adapter, AdapterPayload } from 'oidc-provider';
 
-const client = new Redis(process.env.REDIS_URL, {
-  keyPrefix: 'oidc:',
-});
+const client = new Redis(process.env.REDIS_URL, { keyPrefix: 'oidc:' });
 
-const grantable = new Set([
-  'AccessToken',
+const consumable = new Set([
   'AuthorizationCode',
   'RefreshToken',
   'DeviceCode',
 ]);
 
-function grantKeyFor(id: string) {
+function grantKeyFor(id: any) {
   return `grant:${id}`;
 }
 
-function userCodeKeyFor(userCode: string) {
+function userCodeKeyFor(userCode: any) {
   return `userCode:${userCode}`;
 }
 
+function uidKeyFor(uid: any) {
+  return `uid:${uid}`;
+}
+
 class RedisAdapter implements Adapter {
-  name: string;
-  constructor(name: string) {
+  name: any;
+  constructor(name: any) {
+    console.log('constructor', name);
     this.name = name;
   }
 
-  async upsert(id: string, payload: AdapterPayload, expiresIn: number) {
+  async upsert(id: any, payload: AdapterPayload, expiresIn: number) {
     console.log('upsert', id, payload, expiresIn);
     const key = this.key(id);
-    const store = grantable.has(this.name) ? {
-      dump: JSON.stringify(payload),
-      ...(payload.grantId ? { grantId: payload.grantId } : undefined),
-    } : JSON.stringify(payload);
+    const store = consumable.has(this.name)
+      ? { payload: JSON.stringify(payload) } : JSON.stringify(payload);
 
     const multi = client.multi();
-    multi[grantable.has(this.name) ? 'hmset' : 'set'](key, store);
+    multi[consumable.has(this.name) ? 'hmset' : 'set'](key, store);
 
     if (expiresIn) {
       multi.expire(key, expiresIn);
@@ -59,12 +59,18 @@ class RedisAdapter implements Adapter {
       multi.expire(userCodeKey, expiresIn);
     }
 
+    if (payload.uid) {
+      const uidKey = uidKeyFor(payload.uid);
+      multi.set(uidKey, id);
+      multi.expire(uidKey, expiresIn);
+    }
+
     await multi.exec();
   }
 
-  async find(id: string) {
+  async find(id: any) {
     console.log('find', id, name);
-    const data = grantable.has(this.name)
+    const data = consumable.has(this.name)
       ? await client.hgetall(this.key(id))
       : await client.get(this.key(id));
 
@@ -75,53 +81,50 @@ class RedisAdapter implements Adapter {
     if (typeof data === 'string') {
       return JSON.parse(data);
     }
-    const { dump, ...rest } = data;
+    const { payload, ...rest } = data;
     return {
       ...rest,
-      ...JSON.parse(dump),
+      ...JSON.parse(payload),
     };
   }
 
-  async findByUserCode(userCode: string) {
+  async findByUid(uid: any): Promise<AdapterPayload | undefined | void> {
+    const id = await client.get(uidKeyFor(uid));
+    return id ? this.find(id) : undefined;
+  }
+
+  async findByUserCode(userCode: any) {
     console.log('findByUserCode', userCode);
     const id = await client.get(userCodeKeyFor(userCode));
     return id ? this.find(id) : undefined;
   }
 
-  async destroy(id: string) {
+  async destroy(id: any) {
     console.log('destroy', id);
     const key = this.key(id);
-    if (grantable.has(this.name)) {
-      const multi = client.multi();
-      const grantId = await client.hget(key, 'grantId');
-      if (!grantId) throw new Error(`grantId ${grantId} invalid`);
-      const tokens = await client.lrange(grantKeyFor(grantId), 0, -1);
-      tokens.forEach((token: any) => multi.del(token));
-      multi.del(grantKeyFor(grantId));
-      await multi.exec();
-    } else {
-      await client.del(key);
-    }
+    await client.del(key);
   }
 
-  async consume(id: string) {
+  async revokeByGrantId(grantId: any): Promise<undefined | void> {
+    console.log('revokeByGrantId', grantId);
+    const multi = client.multi();
+    const tokens: any[] = await client.lrange(grantKeyFor(grantId), 0, -1);
+    tokens.forEach((token) => multi.del(token));
+    multi.del(grantKeyFor(grantId));
+    await multi.exec();
+  }
+
+  async consume(id: any) {
     console.log('consume', id);
     await client.hset(this.key(id), 'consumed', Math.floor(Date.now() / 1000));
   }
 
-  key(id: string) {
+  key(id: any) {
+    console.log('key', id);
     return `${this.name}:${id}`;
   }
 
 
-  async findByUid(uid: string): Promise<AdapterPayload | undefined | void> {
-    console.log('findByUid', uid);
-    return undefined;
-  }
-  async revokeByGrantId(grantId: string): Promise<undefined | void> {
-    console.log('revokeByGrantId', grantId);
-    return undefined;
-  }
 }
 
 export default RedisAdapter;
