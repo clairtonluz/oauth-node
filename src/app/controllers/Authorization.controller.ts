@@ -7,17 +7,25 @@ import configuration from '../configurations/authorization_server';
 class AuthorizationController implements Controller {
   public path = '/';
   public router = Router();
-  private oidc: Provider;
+  private provider: Provider;
 
   constructor() {
     const issuer = process.env.PUBLIC_URL || 'http://localhost:3000';
-    this.oidc = new Provider(issuer, configuration);
-    this.oidc.proxy = true;
+    this.provider = new Provider(issuer, configuration);
+    this.provider.proxy = true;
     this.initializeRoutes();
   }
 
   private initializeRoutes() {
-    this.router.use(this.path, this.oidc.callback);
+    this.router.use(this.path, this.provider.callback);
+    this.router.get(`${this.path}interaction/:uid`, async (req, res) => {
+      const details = await this.provider.interactionDetails(req, res);
+      console.log('details', details);
+    });
+    // this.router.post('/interaction/:uid/login', async (req, res) => {
+    //   return this.provider.interactionFinished(req, res, result); // result object below
+    // });
+
   }
 }
 

@@ -1,13 +1,11 @@
 import { Configuration } from "oidc-provider";
-
-import findAccount from './findAccount';
+import clients from './clients';
 // import adapter from './adapter';
 // import renderError from './interactions/renderError';
 import cookies from './cookies';
-import clients from './clients';
 import features from './features';
+import findAccount from './findAccount';
 import jwks from './jwks';
-
 
 const configuration: Configuration = {
   features,

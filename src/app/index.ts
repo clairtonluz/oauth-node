@@ -4,12 +4,17 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import Controller from "./interfaces/Controller";
 import errorMiddleware from './middlewares/Error.middleware';
+import assert from 'assert';
+import { Sequelize } from 'sequelize';
+
+assert(process.env.PUBLIC_URL, 'process.env.PUBLIC_URL missing');
+assert(process.env.REDIS_URL, 'process.env.REDIS_URL missing');
 
 class App {
-  public app: express.Application;
+  public app!: express.Application;
+  public db!: Sequelize;
   constructor(controllers: Controller[]) {
-    this.app = express();
-
+    this.init();
     this.database();
     this.middlewares();
     this.controllers(controllers);
@@ -24,7 +29,29 @@ class App {
     });
   }
 
+  private init() {
+    this.app = express();
+  }
+
   private database() {
+    this.db = new Sequelize({
+      host: '172.31.4.23',
+      username: 'aluno_online',
+      password: 'aluno_online',
+      database: 'desenvolvimento',
+      pool: {
+        max: 5,
+        min: 0,
+        idle: 10000,
+        acquire: 30000,
+      },
+      dialect: 'postgres' /* one of 'mysql' | 'mariadb' | 'postgres' | 'mssql' */
+    });
+
+    this.db
+      .authenticate()
+      .then(() => console.log('Connection Database has been established successfully.'))
+      .catch(err => console.error('Unable to connect to the database:', err));
   }
 
   private middlewares() {
