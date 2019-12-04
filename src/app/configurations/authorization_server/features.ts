@@ -1,8 +1,13 @@
-const features = {
-  introspection: { enabled: true },
-  revocation: { enabled: true },
-  clientCredentials: { enabled: true },
-  deviceFlow: { enabled: true },
+import { Configuration } from "oidc-provider";
+
+const config: Configuration = {
+  features: {
+    devInteractions: { enabled: false },
+    introspection: { enabled: true },
+    revocation: { enabled: true },
+    clientCredentials: { enabled: true },
+    deviceFlow: { enabled: true },
+  }
 };
 
-export default features;
+export default config.features;

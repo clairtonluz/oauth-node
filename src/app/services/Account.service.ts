@@ -1,42 +1,25 @@
 import assert from 'assert';
-import low from 'lowdb';
-import Memory from 'lowdb/adapters/Memory';
 import { Account } from 'oidc-provider';
-
-const db = low(new Memory('db'));
-
-db.defaults({
-  users: [
-    {
-      id: '23121d3c-84df-44ac-b458-3d63a9a05497',
-      email: 'foo@example.com',
-      email_verified: true,
-    },
-    {
-      id: 'c2ac2b4a-2262-4e2f-847a-a40dd3c4dcd5',
-      email: 'bar@example.com',
-      email_verified: false,
-    },
-  ],
-}).write();
+import models from '../models';
+import { UserStatic } from '../models/User';
+const User: UserStatic = models.User;
 
 class AccountService {
   // This interface is required by oidc-provider
-  async findAccount(_: any, id: string): Promise<Account> {
+  async findAccount(_: any, username: string): Promise<Account> {
     // This would ideally be just a check whether the account is still in your storage
-    const account = db.get('users').find({ id }).value();
+    const account = await User.findOne({ where: { email: username } });
     if (!account) {
       return Promise.reject('Account not found');
     }
 
     return {
-      accountId: id,
+      accountId: account.email,
       // and this claims() method would actually query to retrieve the account claims
       async claims() {
         return {
-          sub: id,
+          sub: account.email,
           email: account.email,
-          email_verified: account.email_verified,
         };
       },
     };
@@ -48,10 +31,10 @@ class AccountService {
       assert(password, 'password must be provided');
       assert(email, 'email must be provided');
       const lowercased = String(email).toLowerCase();
-      const account = db.get('users').find({ email: lowercased }).value();
+      const account = await User.findOne({ where: { email: lowercased, password } })
       assert(account, 'invalid credentials provided');
 
-      return account.id;
+      return account!.email;
     } catch (err) {
       return undefined;
     }

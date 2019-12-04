@@ -4,15 +4,16 @@ import clients from './clients';
 // import renderError from './interactions/renderError';
 import cookies from './cookies';
 import features from './features';
-import findAccount from './findAccount';
+// import findAccount from './findAccount';
 import jwks from './jwks';
+import AccountService from '../../services/Account.service';
 
 const configuration: Configuration = {
   features,
   formats: { AccessToken: 'jwt', ClientCredentials: 'jwt' },
   clients,
   // adapter,
-  findAccount,
+  findAccount: AccountService.findAccount,
   // renderError,
   cookies,
   jwks,

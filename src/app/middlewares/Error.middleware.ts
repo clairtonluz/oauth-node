@@ -4,6 +4,7 @@ import HttpException from '../exceptions/HttpException';
 const errorMiddleware = (error: HttpException, _: Request, response: Response, __: NextFunction) => {
   const status = error.status || 500;
   const message = error.message || 'Something went wrong';
+  console.error(error);
   response
     .status(status)
     .send({
