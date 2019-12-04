@@ -128,9 +128,6 @@ class AuthorizationController implements Controller {
     });
 
     this.router.use(this.path, this.provider.callback);
-    // this.router.post('/interaction/:uid/login', async (req, res) => {
-    //   return this.provider.interactionFinished(req, res, result); // result object below
-    // });
 
   }
 }
