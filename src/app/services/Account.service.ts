@@ -20,6 +20,7 @@ class AccountService {
         return {
           sub: account.email,
           email: account.email,
+          phone: 'teste',
         };
       },
     };
