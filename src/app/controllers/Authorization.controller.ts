@@ -66,13 +66,11 @@ class AuthorizationController implements Controller {
 
     this.router.post('/interaction/:uid/login', setNoCache, parse, async (req, res, next) => {
       try {
-        console.log('interaction/login');
         const { uid, prompt, params } = await this.provider.interactionDetails(req, res);
         const client = await this.provider.Client.find(params.client_id);
 
         const accountId = await AccountService.authenticate(req.body.email, req.body.password);
 
-        console.log('test', accountId);
         if (!accountId) {
           res.render('login', {
             client,

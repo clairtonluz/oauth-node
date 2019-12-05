@@ -40,9 +40,13 @@ class App {
 
   private database() {
     this.db = models.sequelize;
+    const { host, port, username } = this.db.config;
     this.db
       .authenticate()
-      .then(() => console.log('Connection Database has been established successfully.'))
+      .then(() => console.log(`Database connected on
+      host:${host}
+      port:${port}
+      username:${username}`))
       .catch(err => console.error('Unable to connect to the database:', err));
   }
 
