@@ -20,7 +20,9 @@ class AccountService {
         return {
           sub: account.email,
           email: account.email,
-          phone: 'teste',
+          phone_number: '85999515458',
+          name: 'Clairton Luz',
+          gender: 'Male',
         };
       },
     };

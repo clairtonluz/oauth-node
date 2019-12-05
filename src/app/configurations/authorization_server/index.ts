@@ -19,7 +19,7 @@ const configuration: Configuration = {
     openid: ['sub'],
     email: ['email', 'email_verified'],
     phone: ['phone_number'],
-    profile: ['birthdate', 'family_name', 'gender', 'given_name', 'locale', 'middle_name', 'name', 'nickname', 'picture', 'preferred_username', 'profile', 'updated_at', 'website', 'zoneinfo']
+    profile: ['name', 'nickname', 'picture', 'birthdate', 'gender', 'locale', 'preferred_username', 'updated_at', 'website']
   },
   cookies,
   jwks,
