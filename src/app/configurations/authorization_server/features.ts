@@ -2,7 +2,7 @@ import { Configuration } from "oidc-provider";
 
 const config: Configuration = {
   features: {
-    devInteractions: { enabled: false },
+    devInteractions: { enabled: true },
     introspection: { enabled: true },
     revocation: { enabled: true },
     clientCredentials: { enabled: true },

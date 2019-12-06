@@ -23,9 +23,20 @@ class AuthorizationController implements Controller {
   }
 
   private initProvider() {
-    const issuer = process.env.PUBLIC_URL || 'http://localhost:3000';
-    this.provider = new Provider(issuer, configuration);
+    const issuer = process.env.PUBLIC_URL;
+    this.provider = new Provider(issuer!, configuration);
     this.provider.proxy = true;
+    function handleClientAuthErrors(err: any, values: any[]) {
+      if (err.statusCode === 401 && err.message === 'invalid_client') {
+        console.log("ERROR:", err);
+        console.log("VALUES", values);
+        // save error details out-of-bands for the client developers, `authorization`, `body`, `client`
+        // are just some details available, you can dig in ctx object for more.
+      }
+    }
+    this.provider.on('grant.error', handleClientAuthErrors);
+    this.provider.on('introspection.error', handleClientAuthErrors);
+    this.provider.on('revocation.error', handleClientAuthErrors);
   }
   private initializeRoutes() {
 
