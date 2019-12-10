@@ -15,7 +15,7 @@ const clients: ClientMetadata[] = [{
   client_name: 'Mobile Application',
   logo_uri: "http://pluspng.com/img-png/google-logo-png-open-2000.png",
   application_type: "native",
-  scope: 'authorization_code offline_access',
+  scope: 'authorization_code offline_access profile',
   grant_types: ['urn:ietf:params:oauth:grant-type:device_code'],
   response_types: [],
   redirect_uris: [],
@@ -29,7 +29,7 @@ const clients: ClientMetadata[] = [{
   grant_types: ['authorization_code', 'refresh_token'],
   response_types: ['code'],
   redirect_uris: ["br.com.example://"],
-  scope: 'offline_access openid',
+  scope: 'offline_access openid profile',
   token_endpoint_auth_method: 'none',
 }, {
   client_id: 'client_id',

@@ -61,6 +61,12 @@ If you wanna `refresh token` you need
 
 2) The client `response_types` with `code` like this: `response_types: ['code']`
 
+
+With this steps and `authorization flow` steps you will receive `refresh token` with this follow steps below to use `refresh token` to request a new `access token` after your current `access token` expire, independently if the user is online yet.
+
+## Refresh token
+
+
 ## Client credentials
 
 #### Example request
