@@ -48,6 +48,19 @@ code=OaMoM527Flxtzeqw98Qh8mZv2l9i5n33gbqTgp2z478
 &client_secret=bar
 ```
 
+## Offline Access (Refresh Token)
+
+If you wanna `refresh token` you need
+
+### The request
+1) add `offline_access` in list of scope.
+2) add a new param called `prompt` with value = `consent` like this `prompt=consent`
+
+### Server configuration
+1) The client's grant type need have `authorization_code` and `refresh_token` like this: `grant_types: ['authorization_code', 'refresh_token']`
+
+2) The client `response_types` with `code` like this: `response_types: ['code']`
+
 ## Client credentials
 
 #### Example request

@@ -5,11 +5,13 @@ services:
     build: .
     command: "npm run debug"
     environment:
-      - TZ=America/Fortaleza
-      - PUBLIC_URL=http://localhost
-      - REDIS_URL=tcp://redis:6379
+      NODE_ENV: development
+      TZ: America/Fortaleza
+      PUBLIC_URL: http://localhost
+      REDIS_URL: tcp://redis:6379
     ports:
       - 80:3000
+      - 9229:9229
     volumes:
       - .:/app
     networks:
